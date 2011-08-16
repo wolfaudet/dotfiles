@@ -14,11 +14,9 @@ set autoindent nocindent nosmartindent
 set clipboard=unnamed
 set showmode
 set showcmd
+set scrolloff=3                 " minimum lines to keep above and below cursor
 set hidden
 set history=700
-" Persistent Undo
-set undodir=~/.vim/undo
-set undofile
 
 autocmd BufNewFile,BufRead .bash_aliases setfiletype sh
 
@@ -67,8 +65,40 @@ else
   highlight SpecialKey ctermbg=Yellow guibg=Yellow
 end
 
+" If swap and undo dirs don't exist, make them and set persistent undo.
+function! InitializeDirectories()
+  let separator = "."
+  let parent = $HOME
+  let prefix = '.vim'
+  let dir_list = {
+             \ 'undo': 'undodir',
+              \ 'swap': 'directory' }
+
+  for [dirname, settingname] in items(dir_list)
+      let directory = parent . '/' . prefix . '/' . dirname
+      if exists("*mkdir")
+          if !isdirectory(directory)
+              call mkdir(directory)
+          endif
+      endif
+      if !isdirectory(directory)
+          echo "Warning: Unable to create backup directory: " . directory
+          echo "Try: mkdir -p " . directory
+      else
+          let directory = substitute(directory, " ", "\\\\ ", "")
+          exec "set " . settingname . "=" . directory
+      endif
+  endfor
+
+  if !isdirectory("$HOME/.vim/undo/")
+    set undofile
+  endif
+endfunction
+call InitializeDirectories()
+
+
 """""""""""""""""""
-" Key Remaping 
+" Key Remaping
 """""""""""""""""""
 let mapleader = ","
 let g:mapleader = ","
