@@ -12,9 +12,11 @@ set backspace=indent,eol,start
 set smarttab
 set autoindent nocindent nosmartindent
 set clipboard=unnamed
+set title
 set showmode
 set showcmd
-set scrolloff=3                 " minimum lines to keep above and below cursor
+set laststatus=2
+set scrolloff=2   " minimum lines to keep above and below cursor
 set hidden
 set history=700
 
@@ -24,7 +26,9 @@ autocmd BufNewFile,BufRead .bash_aliases setfiletype sh
 " Wildmenu Settings
 """""""""""""""""""
 set wildmenu
-set wildmode=list:longest
+"set wildmode=list:longest
+set wildmode=longest,list
+"set wildoptions=ignorecase
 "set wildmode=longest:full,full
 set wildignore=*.swp,*.db,*.bak,*.old,*.dat,*.tmp
 
@@ -66,35 +70,40 @@ else
 end
 
 " If swap and undo dirs don't exist, make them and set persistent undo.
-function! InitializeDirectories()
-  let separator = "."
-  let parent = $HOME
-  let prefix = '.vim'
-  let dir_list = {
-             \ 'undo': 'undodir',
-              \ 'swap': 'directory' }
 
-  for [dirname, settingname] in items(dir_list)
+
+" If swap and undo dirs don't exist, make them and set persistent undo.
+" ONLY WORKS IN 7.3 and above!
+if version >= 703
+  function! InitializeDirectories()
+    let separator = "."
+    let parent = $HOME
+    let prefix = '.vim'
+    let dir_list = {
+                  \ 'undo': 'undodir',
+                  \ 'swap': 'directory' }
+
+    for [dirname, settingname] in items(dir_list)
       let directory = parent . '/' . prefix . '/' . dirname
       if exists("*mkdir")
-          if !isdirectory(directory)
-              call mkdir(directory)
-          endif
+        if !isdirectory(directory)
+          call mkdir(directory)
+        endif
       endif
       if !isdirectory(directory)
-          echo "Warning: Unable to create backup directory: " . directory
-          echo "Try: mkdir -p " . directory
+        echo "Warning: Unable to create backup directory: " . directory
+        echo "Try: mkdir -p " . directory
       else
-          let directory = substitute(directory, " ", "\\\\ ", "")
-          exec "set " . settingname . "=" . directory
+        let directory = substitute(directory, " ", "\\\\ ", "")
+        exec "set " . settingname . "=" . directory
       endif
-  endfor
-
-  if !isdirectory("$HOME/.vim/undo/")
-    set undofile
-  endif
-endfunction
-call InitializeDirectories()
+    endfor
+    if !isdirectory("$HOME/.vim/undo/")
+      set undofile
+    endif
+  endfunction
+  call InitializeDirectories()
+endif
 
 
 """""""""""""""""""
