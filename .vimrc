@@ -1,29 +1,24 @@
 """""""""""""""""""""""""""""
-" Wolf's .vimrc 
+" Wolf's .vimrc
 """""""""""""""""""""""""""""
-
 set ruler
 syntax on
 set t_Co=256
 "colors wombat256
 colors xoria256
-
-set history=700
-
-" Persistent Undo
-try
-  set undodir=~/.vim/undo
-  set undofile
-catch
-endtry
-
+set mouse=a
 set backspace=indent,eol,start
 "set whichwrap+=<,>,h,l
-set mouse=a
-"set mousem=extend
+set smarttab
+set autoindent nocindent nosmartindent
 set clipboard=unnamed
 set showmode
 set showcmd
+set hidden
+set history=700
+" Persistent Undo
+set undodir=~/.vim/undo
+set undofile
 
 autocmd BufNewFile,BufRead .bash_aliases setfiletype sh
 
@@ -45,11 +40,32 @@ set softtabstop=2
 """""""""""""""""""
 " Search Settings
 """""""""""""""""""
-set ignorecase 
+set ignorecase
 set smartcase
 set showmatch
 set incsearch
 "set hlsearch
+
+
+"""""""""""""""""""
+" 
+"""""""""""""""""""
+
+" only set if unset, since it has side effects (resetting a bunch of options)
+if &compatible
+  set nocompatible
+endif
+
+" show trailing spaces in yellow (or red, for users with dark backgrounds).
+" "set nolist" to disable this.
+" this only works if syntax highlighting is enabled.
+set list
+set listchars=tab:\ \ ,trail:\ ,
+if &background == "dark"
+  highlight SpecialKey ctermbg=Red guibg=Red
+else
+  highlight SpecialKey ctermbg=Yellow guibg=Yellow
+end
 
 """""""""""""""""""
 " Key Remaping 
