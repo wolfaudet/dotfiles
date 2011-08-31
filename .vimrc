@@ -20,7 +20,7 @@ set scrolloff=2   " minimum lines to keep above and below cursor
 set hidden
 set history=700
 
-autocmd BufNewFile,BufRead .bash_aliases setfiletype sh
+autocmd BufNewFile,BufRead,BufEnter .bash_aliases setfiletype sh
 
 """""""""""""""""""
 " Wildmenu Settings
