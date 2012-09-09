@@ -1,6 +1,11 @@
-"""""""""""""""""""""""""""""
+"""""""""""""""""""
 " Wolf's .vimrc
-"""""""""""""""""""""""""""""
+"""""""""""""""""""
+" only set if unset, since it has side effects (resetting a bunch of options)
+if &compatible
+  set nocompatible
+endif
+
 set ruler
 syntax on
 set t_Co=256
@@ -10,21 +15,27 @@ set backspace=indent,eol,start
 "set whichwrap+=<,>,h,l
 set smarttab
 set autoindent nocindent nosmartindent
-set clipboard=unnamed
+"set clipboard=unnamed
+"set clipboard=unnamedplus
 set title
 set showmode
 set showcmd
 set laststatus=2
 set scrolloff=2   " minimum lines to keep above and below cursor
 set hidden
-set history=700
+set history=500
+"set textwidth=80
+"set colorcolumn=+1..+5
+"highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+"match OverLength /\%81v.\+/
 
 autocmd BufNewFile,BufRead,BufEnter .bash_aliases setfiletype sh
+" Turn off auto linewrap at 80 chars for certain filetypes
+au BufRead,BufNewFile *.txt,*.html,.bash_aliases setl tw=0
 
 """""""""""""""""""
 " Mouse Settings
 """""""""""""""""""
-set mouse=a
 map <MouseDown> <Up>
 map <MouseUp> <Down>
 nmap <LeftMouse> <nop>
@@ -59,15 +70,10 @@ set wildignore=*.swp,*.db,*.bak,*.old,*.dat,*.tmp
 """""""""""""""""""
 " General Key Remapping
 """""""""""""""""""
-let mapleader = ","
-let g:mapleader = ","
-
-" Use Y to copy until the end of the line. Use yy to copy the whole line.
 nnoremap Y y$
 
-" Map cmd-c and cmd-v to use system clipboard.
-"vmap <C-c> y:call system("pbcopy", getreg("\""))<CR>
-"nmap <C-v> :call setreg("\"",system("pbpaste"))<CR>p
+let mapleader = ","
+let g:mapleader = ","
 
 " Window movement
 map <C-j> <C-W>j
@@ -78,12 +84,6 @@ map <C-l> <C-W>l
 """""""""""""""""""
 " Long Stuff
 """""""""""""""""""
-
-" only set if unset, since it has side effects (resetting a bunch of options)
-if &compatible
-  set nocompatible
-endif
-
 " show trailing spaces in yellow (or red, for users with dark backgrounds).
 " 'set nolist' to disable this.
 " this only works if syntax highlighting is enabled.
@@ -128,4 +128,13 @@ if version >= 703
   call InitializeDirectories()
 endif
 
-
+" OS specific stuff
+if has("unix")
+  let uname = system("uname")
+  if uname =~ "Darwin"
+    set mouse=a
+    source ~/google.vim
+  else
+    source /usr/share/vim/google/google.vim
+  endif
+endif
